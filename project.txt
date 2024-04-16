@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_ITEMS 5
+#define MAX_NAME_LENGTH 50
+#define MAX_USERNAME_LENGTH 50
+
+// Structure to represent a clothing item
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    // Other attributes like color, size, etc. can be added
+} ClothingItem;
+
+// Structure to represent a user
+typedef struct {
+    char username[MAX_USERNAME_LENGTH];
+    ClothingItem *selectedItem;
+} User;
+
+// Function to display the main menu
+void displayMenu() {
+    printf("\nMain Menu\n");
+    printf("1. Select Clothing Item\n");
+    printf("2. Try On Selected Item\n");
+    printf("3. Exit\n");
+}
+
+// Function to select a clothing item
+void selectClothingItem(ClothingItem items[], int numItems) {
+    printf("\nSelect Clothing Item:\n");
+    for (int i = 0; i < numItems; ++i) {
+        printf("%d. %s\n", i + 1, items[i].name);
+    }
+}
+
+// Function to try on the selected clothing item
+void tryOnItem(User *user) {
+    if (user->selectedItem != NULL) {
+        printf("\nVirtual Try-On for %s\n", user->username);
+        printf("Clothing Item: %s\n", user->selectedItem->name);
+    } else {
+        printf("\nNo clothing item selected.\n");
+    }
+}
+
+int main() {
+    ClothingItem items[MAX_ITEMS] = {{"Shirt"}, {"Pants"}, {"Dress"},{"Hoodie"},{"Jerkin"}};
+    int numItems = sizeof(items) / sizeof(items[0]);
+
+    User user;
+    user.selectedItem = NULL;
+
+    printf("Enter your username: ");
+    fgets(user.username, MAX_USERNAME_LENGTH, stdin);
+    strtok(user.username, "\n");  // Remove newline character
+
+    int choice;
+    do {
+        displayMenu();
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar();  // Consume newline character from previous input
+
+        switch (choice) {
+            case 1:
+                selectClothingItem(items, numItems);
+                printf("Enter the item number to select: ");
+                int itemNumber;
+                scanf("%d", &itemNumber);
+                if (itemNumber >= 1 && itemNumber <= numItems) {
+                    user.selectedItem = &items[itemNumber - 1];
+                    printf("Selected item: %s\n", user.selectedItem->name);
+                } else {
+                    printf("Invalid item number.\n");
+                }
+                break;
+            case 2:
+                tryOnItem(&user);
+                break;
+            case 3:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 3);
+
+    return 0;
+}
